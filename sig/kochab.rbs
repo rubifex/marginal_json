@@ -1,0 +1,69 @@
+module Kochab
+  VERSION: String
+  type value = nil | bool | Integer | Float | String | Array[value] | Hash[String, value]
+  type path = Array[String | Integer]
+
+  def self.parse: (String text, ?strict: bool, ?trailing_commas: bool, ?allow_nan: bool, ?max_depth: Integer) -> Document
+  def self.apply: (String text, Array[TextEdit] edits) -> String
+  def self.format: (String text, ?indent: Integer, ?keep_blank_lines: Integer) -> String
+
+  class Error < Struct[untyped]
+    attr_accessor range: Range[Integer]
+    attr_accessor code: Symbol
+    attr_accessor message: String
+    attr_accessor severity: Symbol
+    def initialize: (?range: Range[Integer], ?code: Symbol, ?message: String, ?severity: Symbol) -> void
+  end
+
+  class Comment < Struct[untyped]
+    attr_accessor range: Range[Integer]
+    attr_accessor text: String
+    attr_accessor kind: Symbol
+    def initialize: (?range: Range[Integer], ?text: String, ?kind: Symbol) -> void
+  end
+
+  class TextEdit < Struct[untyped]
+    attr_accessor offset: Integer
+    attr_accessor length: Integer
+    attr_accessor text: String
+    def initialize: (?offset: Integer, ?length: Integer, ?text: String) -> void
+  end
+
+  class Node < Struct[untyped]
+    attr_accessor kind: Symbol
+    attr_accessor range: Range[Integer]
+    attr_accessor key_range: Range[Integer]?
+    attr_accessor value: value
+    attr_accessor children: Array[Node]
+    attr_accessor leading_comments: Array[Comment]
+    attr_accessor trailing_comment: Comment?
+    attr_accessor key: (String | Integer)?
+    attr_accessor parent: Node?
+    def initialize: (?kind: Symbol, ?range: Range[Integer], ?key_range: Range[Integer]?, ?value: value, ?children: Array[Node], ?leading_comments: Array[Comment], ?trailing_comment: Comment?, ?key: (String | Integer)?, ?parent: Node?) -> void
+  end
+
+  class ParseError < StandardError
+    attr_reader errors: Array[Error]
+    def initialize: (Array[Error] errors) -> void
+  end
+
+  class Document
+    attr_reader text: String
+    attr_reader root: Node
+    attr_reader errors: Array[Error]
+    attr_reader comments: Array[Comment]
+    attr_reader floating_comments: Array[Comment]
+    def value: () -> value
+    def valid?: () -> bool
+    def node_at: (Integer offset) -> Node?
+    def path_at: (Integer offset) -> path?
+    def range_of: (path path) -> Range[Integer]?
+    def key_range_of: (path path) -> Range[Integer]?
+    def utf16_position_at: (Integer offset) -> [Integer, Integer]
+    def offset_at_utf16_position: (Integer line, Integer character) -> Integer
+    def set: (path path, value value) -> Array[TextEdit]
+    def remove: (path path) -> Array[TextEdit]
+    def insert: (path path, value value, ?after: String?) -> Array[TextEdit]
+    def format: (?indent: Integer, ?keep_blank_lines: Integer) -> String
+  end
+end
