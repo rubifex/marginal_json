@@ -23,7 +23,7 @@ jobs:
           bundler-cache: true
       - run: bundle exec rake test isolation
       - run: gem build kochab.gemspec
-      - run: gem install ./kochab-0.1.0.gem --local --no-document
+      - run: gem install ./kochab-0.1.0.gem --local --no-document # zizmor: ignore[adhoc-packages]
       - run: ruby examples/settings.rb
 
   performance:
@@ -47,5 +47,5 @@ jobs:
       - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           ruby-version: '4.0'
-      - run: gem install rbs --no-document
+      - run: gem install rbs --no-document # zizmor: ignore[adhoc-packages]
       - run: rbs -I sig validate

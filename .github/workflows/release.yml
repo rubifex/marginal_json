@@ -24,7 +24,7 @@ jobs:
       - name: Verify tag and version
         run: test "${GITHUB_REF_NAME}" = "v$(bundle exec ruby -Ilib -rkochab/version -e 'print Kochab::VERSION')"
       - name: Test and build
-        run: |
+        run: | # zizmor: ignore[adhoc-packages]
           bundle exec rake
           gem build kochab.gemspec --output kochab.gem
           gem install --local kochab.gem --no-document
