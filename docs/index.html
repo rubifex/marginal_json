@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Kochab is a source-aware JSONC parser for Ruby with error recovery and formatting-preserving edits.">
+  <meta name="theme-color" content="#020617">
+  <meta property="og:title" content="Kochab — source-aware JSONC for Ruby">
+  <meta property="og:description" content="Parse, locate, and edit JSONC without losing comments or formatting.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://noxdea.github.io/kochab/">
+  <link rel="canonical" href="https://noxdea.github.io/kochab/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <title>Kochab — source-aware JSONC for Ruby</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="./" aria-label="Kochab home">
+        <span class="brand-mark" aria-hidden="true">{</span>
+        Kochab
+      </a>
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <a href="#capabilities">Capabilities</a>
+        <a href="#install">Install</a>
+        <a href="https://github.com/noxdea/kochab">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="shell hero">
+      <div class="hero-copy">
+        <p class="availability">Built for Ruby 3.1 and newer</p>
+        <h1 class="text-balance">JSON keeps its context.</h1>
+        <p class="hero-summary text-pretty">
+          Kochab parses JSONC, recovers from broken syntax, and changes only
+          the bytes you intend. Comments and formatting stay where they belong.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="#install">Install Kochab</a>
+          <a class="text-link" href="https://github.com/noxdea/kochab#quick-start">Read the quick start</a>
+        </div>
+        <ul class="proof-list" aria-label="Project details">
+          <li>Pure Ruby</li>
+          <li>Zero runtime dependencies</li>
+          <li>MIT licensed</li>
+        </ul>
+      </div>
+
+      <figure class="source-inspector">
+        <figcaption>
+          <span>settings.jsonc</span>
+          <span class="status">Valid with comments</span>
+        </figcaption>
+        <pre aria-label="JSONC source with byte ranges"><code><span class="code-line" data-line="01" data-range="0…89"><span>{</span></span>
+<span class="code-line comment" data-line="02" data-range="4…26"><span>  // Font size in points</span></span>
+<span class="code-line" data-line="03" data-range="39…86"><span>  "editor": {</span></span>
+<span class="code-line active-line" data-line="04" data-range="58…60"><span>    "font_size": <mark>14</mark>,</span></span>
+<span class="code-line" data-line="05" data-range="75…81"><span>    "theme": "dark",</span></span>
+<span class="code-line" data-line="06" data-range=""><span>  },</span></span>
+<span class="code-line" data-line="07" data-range=""><span>}</span></span></code></pre>
+        <p class="inspector-note text-pretty">
+          Replace bytes <span class="tabular-nums">58…60</span>. Every other
+          byte remains untouched.
+        </p>
+      </figure>
+    </section>
+
+    <section class="capability-section" id="capabilities">
+      <div class="shell">
+        <div class="section-heading">
+          <h2 class="text-balance">Work with the source, not around it.</h2>
+          <p class="text-pretty">
+            Kochab keeps parsed values and their original representation
+            connected through the entire edit.
+          </p>
+        </div>
+        <div class="capability-grid">
+          <article>
+            <p class="method-name">Kochab.parse</p>
+            <h3 class="text-balance">Recover useful values</h3>
+            <p class="text-pretty">
+              Consume the complete input and return structured diagnostics
+              without throwing away the document around an error.
+            </p>
+          </article>
+          <article>
+            <p class="method-name">range_of · node_at</p>
+            <h3 class="text-balance">Locate exact syntax</h3>
+            <p class="text-pretty">
+              Query UTF-8 byte ranges, syntax nodes, paths, comments, and
+              zero-based UTF-16 positions for editor integrations.
+            </p>
+          </article>
+          <article>
+            <p class="method-name">set · insert · remove</p>
+            <h3 class="text-balance">Edit the smallest span</h3>
+            <p class="text-pretty">
+              Generate validated text edits that preserve unrelated whitespace,
+              comments, commas, and literal spelling.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell detail-section">
+      <div class="detail-copy">
+        <h2 class="text-balance">Strict when you need it. Resilient when you do not.</h2>
+        <p class="text-pretty">
+          Default parsing reports errors and returns the best available value.
+          Strict mode accepts standard JSON only and raises with every diagnostic.
+        </p>
+        <a class="text-link" href="https://github.com/noxdea/kochab#parsing-and-recovery">Explore parsing and recovery</a>
+      </div>
+      <pre class="ruby-sample" aria-label="Ruby parsing example"><code>doc = Kochab.parse(text)
+
+doc.valid?            # false
+doc.errors.first.code # :expected_colon
+doc.value              # best available value</code></pre>
+    </section>
+
+    <section class="install-section" id="install">
+      <div class="shell install-inner">
+        <div>
+          <h2 class="text-balance">Add source-aware JSONC in one command.</h2>
+          <p class="text-pretty">Kochab has no runtime gem dependencies.</p>
+        </div>
+        <div>
+          <pre class="install-command"><code>gem install kochab</code></pre>
+          <a class="text-link" href="https://rubygems.org/gems/kochab">View Kochab on RubyGems</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <p>Kochab is available under the MIT License.</p>
+      <p class="tabular-nums">v0.1.0</p>
+    </div>
+  </footer>
+</body>
+</html>
