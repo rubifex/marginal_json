@@ -1,26 +1,64 @@
-# Kochab
+<h1 align="center">Kochab</h1>
 
-JSONC parsing with byte ranges, error recovery, and edits that preserve the
-surrounding comments and formatting. Ruby 3.1+, no runtime gem dependencies,
-no custom native extension. Ruby's standard `json` library handles string
-escapes and value serialization; scanning, recovery, and edits are Ruby code.
+<p align="center">
+  <strong>JSONC parsing with byte ranges, error recovery, and formatting-preserving edits</strong>
+</p>
 
-Kochab are annotations written in a manuscript's margins. `gloss` and `glossa`
-were registered on RubyGems; `kochab` was available when checked on
-2026-09-09. Availability is not a reservation. This checkout is not published.
+<p align="center">
+  <a href="https://rubygems.org/gems/kochab"><img src="https://img.shields.io/gem/v/kochab.svg?colorB=319e8c" alt="Gem Version"></a>
+  <a href="https://rubygems.org/gems/kochab"><img src="https://img.shields.io/gem/dt/kochab.svg" alt="Downloads"></a>
+  <a href="https://github.com/noxdea/kochab/actions/workflows/main.yml"><img src="https://github.com/noxdea/kochab/actions/workflows/main.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/ruby-%3E%3D%203.1-CC342D.svg" alt="Ruby 3.1+">
+  <a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+</p>
+
+<p align="center">
+  <a href="#features">Features</a> ·
+  <a href="#installation">Installation</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#source-queries">Source Queries</a> ·
+  <a href="#editing">Editing</a> ·
+  <a href="#development">Development</a>
+</p>
+
+---
+
+Kochab is a pure Ruby JSONC parser that retains exact source locations. It
+recovers from syntax errors and produces minimal text edits that preserve
+surrounding comments and formatting.
+
+## Features
+
+- JSONC parsing with comments and trailing commas
+- UTF-8 byte ranges, syntax tree queries, and UTF-16 position conversion
+- Error recovery with structured diagnostics and a strict JSON mode
+- Minimal insert, replace, and remove edits that preserve unrelated source text
+- Comment-preserving formatting
+- RBS signatures with no runtime gem dependencies
 
 ## Installation
 
-From this checkout:
+Add Kochab to your Gemfile:
 
-```sh
-gem build kochab.gemspec
-gem install ./kochab-0.1.0.gem
+```ruby
+gem "kochab"
 ```
 
-Or use `gem "kochab", path: "/path/to/checkout"` in your Gemfile.
+Then install:
 
-## Parse and update a setting
+```sh
+bundle install
+```
+
+Or install it directly:
+
+```sh
+gem install kochab
+```
+
+Kochab requires Ruby 3.1 or later.
+
+## Quick Start
 
 ```ruby
 require "kochab"
@@ -73,7 +111,7 @@ Property nodes have one value child; a missing value is a zero-length `:null`
 node. Containers' `value` fields contain their Ruby Hash or Array values.
 Treat the tree and its values as read-only snapshots. `doc.text` is frozen.
 
-## Recovery and strict mode
+## Parsing and Recovery
 
 The default parser consumes the complete input and reports syntax problems in
 `doc.errors`, including invalid UTF-8. It returns the best available value:
@@ -115,7 +153,7 @@ value's `trailing_comment`. Comments separated by a blank line, and additional
 comments that cannot occupy the single trailing slot, are `floating_comments`.
 Comment text always retains its original delimiters and bytes.
 
-## Minimal edits
+## Editing
 
 ```ruby
 doc.set(["editor", "font_size"], 14)                 # replace one value
@@ -157,7 +195,7 @@ the first newline style present in the input, and appends one final newline.
 rejects invalid documents to avoid discarding incomplete input. Use minimal
 edits when existing whitespace must be preserved exactly.
 
-## Validation and performance
+## Development
 
 ```sh
 bundle install
@@ -176,6 +214,8 @@ case must pass and every `n_` case must fail; upstream explicitly permits either
 outcome for `i_` cases. Valid inputs are also checked against `JSON.parse`.
 Recovery/fuzz tests check termination, source preservation, and bounded ranges.
 Edit tests check exact replacement bytes and preservation of unrelated comments.
+
+## Performance
 
 Measured on macOS arm64, Ruby 4.0.0 with YJIT (2026-09-09), seven-sample medians:
 
@@ -196,6 +236,13 @@ byte-position queries use binary search.
 CI tests Ruby 3.1, 3.2, 3.3, 3.4, and 4.0 on Linux, macOS, and Windows. Performance
 budgets run separately on Linux with Ruby 4.0 and YJIT. Built-gem installation
 and the example are smoke-tested in CI.
+
+## Contributing
+
+Bug reports and pull requests are welcome on
+[GitHub](https://github.com/noxdea/kochab).
+
+See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ## License
 
